@@ -21,7 +21,7 @@ poetry install
 pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
 ```
 
-3. Install [tqdm](https://tqdm.github.io/)~(for progress bar) and [ipdb](https://wangchuan.github.io/coding/2017/07/12/ipdb-cheat-sheet.html)~(for debugging):
+3. Install [tqdm](https://tqdm.github.io/)(for progress bar) and [ipdb](https://wangchuan.github.io/coding/2017/07/12/ipdb-cheat-sheet.html)(for debugging):
 ```
 pip install tqdm
 pip install ipdb
