@@ -29,20 +29,20 @@ Not all recommendations and guidelines are changed everywhere (as of limited tim
 * We did not include it in this package, however one can do so and then use cool commands instead of 'python cifar.py' etc and make the repository much more moduler.
 
 ## SLURM commands
-1. Submitting a job to the OMNI cluster:
-a. Create a bash file, `> sbatch job_scripts/different_networks.sh`
+1. Submitting a job to the OMNI cluster: <br>
+  First create a bash file and then: `> sbatch job_scripts/different_networks.sh`
    > INFO: Example provided in job_scripts/different_networks.sh
 
 
 2. Monitoring submitted jobs:
  
- a. monitoring particular job : `> squeue -j job_id`
+ a. monitoring particular job: `> squeue -j job_id`
 
  b. monitoring all jobs by user: `> squeue -u user_id`
 
  c. monitoring progress every second: `> watch -n 1 squeue -u user_id`
 
- d. monitoring jobs on a partition : `> squeue -p gpu`
+ d. monitoring jobs on a partition: `> squeue -p gpu`
 
 
 3. Getting information about a job: `> scontrol show JOB=job_id`
