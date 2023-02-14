@@ -6,6 +6,24 @@ from yaml import Loader, Dumper
 class SimpleYamlMixin:
     """Adds support for reading / writing the object, which should be a dataclass to yaml."""
 
+    def to_yaml(self) -> str:
+        """Returning the current object as yaml representation.
+
+        Returns
+        -------
+        str
+            The yaml str.
+        """
+        # Assuming a dataclass with underlying dict
+        as_dict = vars(self)
+        # Wrapping object
+        parent_dict = dict()
+        parent_dict[type(self).__name__] = as_dict
+        
+        # Dumping to yaml
+        yaml_str = yaml.dump(parent_dict)
+        return yaml_str
+
     def save_as_yaml(self, file: str) -> str:
         """Saves the current object in yaml format.
 
@@ -19,14 +37,7 @@ class SimpleYamlMixin:
         str
             The file path.
         """
-        # Assuming a dataclass with underlying dict
-        as_dict = vars(self)
-        # Wrapping object
-        parent_dict = dict()
-        parent_dict[type(self).__name__] = as_dict
-        
-        # Dumping to yaml
-        yaml_str = yaml.dump(parent_dict)
+        yaml_str = self.to_yaml()
         
         os.makedirs(os.path.dirname(file), exist_ok=True)
         with open(file, "w") as f:

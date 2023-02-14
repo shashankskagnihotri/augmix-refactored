@@ -13,7 +13,7 @@
             "justMyCode": true,
             "args": [
                 "--config-path",
-                "${workspaceFolder}/cifar_config.yaml"
+                "${workspaceFolder}/config/cifar_config.yaml"
             ]
         }
     ]

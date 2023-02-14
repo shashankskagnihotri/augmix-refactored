@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from typing import Any, Dict, Literal, Optional, List, Type, get_args
+from typing import Any, Dict, Optional, List, Type, get_args
 import inspect
 import argparse
 from dataclasses import Field, MISSING

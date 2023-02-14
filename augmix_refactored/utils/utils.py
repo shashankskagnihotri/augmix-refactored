@@ -16,13 +16,14 @@ def get_lr(step, total_steps, lr_max, lr_min):
 
 
 def setup_logger(log_path):
+    fmt = "[%(asctime)s %(levelname)s %(filename)s line %(lineno)d %(process)d] %(message)s"
+    
     logger_path = log_path.replace('training_log.csv', 'log.log')
-    logging.basicConfig(filename=logger_path, filemode='a')
+    logging.basicConfig(filename=logger_path, filemode='a', format=fmt)
     logger_name = "logger"
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    fmt = "[%(asctime)s %(levelname)s %(filename)s line %(lineno)d %(process)d] %(message)s"
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
     return logger

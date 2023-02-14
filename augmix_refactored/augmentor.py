@@ -1,10 +1,13 @@
 from types import MethodType
 from typing import List
+
 import numpy as np
-from PIL import Image, ImageOps, ImageEnhance
-from augmix_refactored.tools.helper import int_parameter, float_parameter, sample_level
 import torch
+from PIL import Image, ImageEnhance, ImageOps
+
 from augmix_refactored.config import Config
+from augmix_refactored.tools.helper import (float_parameter, int_parameter,
+                                            sample_level)
 
 # TODO Add Docstrings and correct method return types to all functions.
 

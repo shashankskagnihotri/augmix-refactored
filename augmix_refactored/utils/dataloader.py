@@ -1,11 +1,11 @@
 from typing import Any, Tuple, Union
+
 import torch
-from torchvision import datasets
-from torchvision import transforms
-import __augmentations
+from torchvision import datasets, transforms
+
+from augmix_refactored.aug_mix_dataset import AugMixDataset
 from augmix_refactored.augmentor import Augmentor
 from augmix_refactored.config import Config
-from augmix_refactored.aug_mix_dataset import AugMixDataset
 
 
 def cifar_transforms():

@@ -20,24 +20,23 @@ as evaluation on CIFAR-10-C and CIFAR-100-C.
 Example usage:
   `python cifar.py`
 """
-from __future__ import print_function
+
 import argparse
 import os
 import shutil
 import time
+from datetime import datetime
 
-import __augmentations
-from augmix_refactored.config import Config
 import numpy as np
-
 import torch
 import torch.backends.cudnn as cudnn
 
-from augmix_refactored.utils.dataloader import get_data
-from augmix_refactored.utils.utils import get_lr, setup_logger, get_model, get_optimizer, get_lr_scheduler
+from augmix_refactored.config import Config
 from augmix_refactored.tools.tests import test, test_c
 from augmix_refactored.tools.trainer import train
-from datetime import datetime
+from augmix_refactored.utils.dataloader import get_data
+from augmix_refactored.utils.utils import (get_lr_scheduler, get_model,
+                                           get_optimizer, setup_logger)
 
 
 def main():
@@ -60,7 +59,7 @@ def main():
     np.random.seed(1)
 
     config.save_folder = os.path.join(
-        config.save_folder, config.dataset, config.model, str(datetime.now()).replace(' ', '_'))
+        config.save_folder, config.dataset, config.model, datetime.now().strftime("%y-%m-%d_%H_%M_%S_%f"))
 
     if not os.path.exists(config.save_folder):
         os.makedirs(config.save_folder)
@@ -78,10 +77,7 @@ def main():
     # TODO Explain during presentation
     #import ipdb;ipdb.set_trace()
 
-    configuration = ''
-    for key in config.__dict__:
-        configuration += '\n{} : {}\n'.format(key, config.__dict__[key])
-    logging.info(configuration)
+    logging.info("Current Configuration: \n" + config.to_yaml().replace("\n", "\n\n"))
 
     # Load datasets
     train_loader, test_loader, test_data, base_c_path, num_classes = get_data(
