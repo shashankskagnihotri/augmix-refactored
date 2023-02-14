@@ -52,7 +52,7 @@ a. Create a bash file, `> sbatch job_scripts/different_networks.sh`
    >INFO:  Higher number leads to less priority and lower number leads to higher priority. Default NICE=0
 
 
-5. Finding out job efficiency: `> seff -j job_id'
+5. Finding out job efficiency: `> seff -j job_id`
 
 
 
