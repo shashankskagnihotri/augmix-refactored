@@ -30,16 +30,6 @@ fi
 python augmix_refactored/script/cifar.py --model ${net} --learning-rate ${lr}
 #echo ${net} ${lr} $SLURM_ARRAY_TASK_ID
 
-#for net in $networks
-#do
-    #if [[ $net = 'allconv' ]]
-    #then
-        #lr='0.01'
-    #else
-        #lr='0.1'
-    #fi
-    #python augmix_refactored/script/cifar.py --model ${net} --learning-rate ${lr}
-#done
 end=`date +%s`
 runtime=$((end-start))
 
