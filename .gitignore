@@ -164,4 +164,7 @@ snapshot/*
 output/*
 temp/*
 **/*.env
+
+# Ignore datasets
+*.tar
 snapshots/*
