@@ -31,7 +31,7 @@ Not all recommendations and guidelines are changed everywhere (as of limited tim
 ## SLURM commands
 1. Submitting a job to the OMNI cluster:
 a. Create a bash file, `> sbatch job_scripts/different_networks.sh`
-> INFO: Example provided in job_scripts/different_networks.sh
+   > INFO: Example provided in job_scripts/different_networks.sh
 
 
 2. Monitoring submitted jobs:
