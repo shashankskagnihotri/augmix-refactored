@@ -9,23 +9,20 @@ Currently only the project is only tested with the cifar dataset.
 Not all recommendations and guidelines are changed everywhere (as of limited time until now) so the project is needing further refactorings to become an optimal example.
 
 ## SETUP 
-1. Setup poetry, first cd to the repo directory
-```
-poetry env use <path/to/python>
-poetry shell
-poetry install
-```
+
+1. Setup poetry, first cd to the repo directory.
+    ```
+    poetry env use <path/to/python>
+    poetry shell
+    poetry install
+    ```
+    The ``poetry env use`` command must only be executed when a python executable different from current one in ``PATH`` should be used. 
 
 2. Install [torch](https://pytorch.org/get-started/locally/) (can also use:)
-```
-pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-```
+    ```
+    pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+    ```
 
-3. Install [tqdm](https://tqdm.github.io/)(for progress bar) and [ipdb](https://wangchuan.github.io/coding/2017/07/12/ipdb-cheat-sheet.html)(for debugging):
-```
-pip install tqdm
-pip install ipdb
-```
 
 ## Using [Hydra](https://hydra.cc/docs/intro/)
 * [Hydra](https://hydra.cc/docs/intro/) is a framework that simplifies development.
