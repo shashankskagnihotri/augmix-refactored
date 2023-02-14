@@ -78,3 +78,6 @@ class Config(ArgparserMixin, SimpleYamlMixin):
 
     disable_tqdm: bool = False
     """When using TQDM with slurm, the slurm.err file has a progress bar for every single increment. Thus progress bar can be turned off if need be."""
+
+    log_path: Optional[str] = None
+    """Log path, will be filled automatically with the save folder when not specified."""

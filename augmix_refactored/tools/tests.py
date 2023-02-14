@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
-
+from augmix_refactored.augmentor import Augmentor
 from augmix_refactored.config import Config
 
 def test(net, test_loader, logging):
@@ -26,7 +26,7 @@ def test(net, test_loader, logging):
 def test_c(net, test_data, base_path, config: Config, logging):
     """Evaluate network on given corrupted dataset."""
     corruption_accs = []
-    for corruption in CORRUPTIONS:
+    for corruption in Augmentor.CORRUPTIONS:
         # Reference to original data is mutated
         test_data.data = np.load(base_path + corruption + '.npy')
         test_data.targets = torch.LongTensor(np.load(base_path + 'labels.npy'))

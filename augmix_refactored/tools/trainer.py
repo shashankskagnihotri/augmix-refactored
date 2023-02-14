@@ -1,9 +1,10 @@
 import torch
 import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 
 from augmix_refactored.config import Config
+
 
 def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoch):
     """Train for one epoch."""

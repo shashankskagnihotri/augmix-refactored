@@ -20,7 +20,7 @@ as evaluation on CIFAR-10-C and CIFAR-100-C.
 Example usage:
   `python cifar.py`
 """
-from __future__ import print_function 
+from __future__ import print_function
 import argparse
 import os
 import shutil
@@ -39,22 +39,16 @@ from augmix_refactored.tools.tests import test, test_c
 from augmix_refactored.tools.trainer import train
 from datetime import datetime
 
-CORRUPTIONS = [
-    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
-    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
-    'brightness', 'contrast', 'elastic_transform', 'pixelate',
-    'jpeg_compression'
-]
 
 def main():
 
     parser = argparse.ArgumentParser(
         description='Trains a CIFAR Classifier',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    
+
     parser = Config.get_parser(parser)
     args = parser.parse_args()
-    
+
     config: Config = None
     if args.config_path:
         config = Config.load_from_yaml(args.config_path)
@@ -65,30 +59,36 @@ def main():
     torch.manual_seed(1)
     np.random.seed(1)
 
-    config.save_folder = os.path.join(config.save_folder, config.dataset, config.model, str(datetime.now()).replace(' ','_'))
+    config.save_folder = os.path.join(
+        config.save_folder, config.dataset, config.model, str(datetime.now()).replace(' ', '_'))
 
     if not os.path.exists(config.save_folder):
         os.makedirs(config.save_folder)
     if not os.path.isdir(config.save_folder):
         raise Exception('%s is not a dir' % config.save_folder)
 
-    log_path = os.path.join(config.save_folder, 'training_log.csv')
+    # Configuring logging.
+    log_path = os.path.join(
+        config.save_folder if not config.log_path else config.log_path,
+        'training_log.csv')
 
     logging = setup_logger(log_path)
     config.log_path = log_path
+
+    # TODO Explain during presentation
     #import ipdb;ipdb.set_trace()
-    
+
     configuration = ''
     for key in config.__dict__:
         configuration += '\n{} : {}\n'.format(key, config.__dict__[key])
     logging.info(configuration)
 
-    # Load datasets    
-    train_loader, test_loader, base_c_path, num_classes = get_data(config=config)
+    # Load datasets
+    train_loader, test_loader, test_data, base_c_path, num_classes = get_data(
+        config=config)
 
     # Create model
     net = get_model(config, num_classes)
-
     optimizer = get_optimizer(config, net=net)
 
     # Distribute model across all visible GPUs
@@ -117,17 +117,20 @@ def main():
             100 - 100. * test_c_acc))
         return
 
-    scheduler = get_lr_scheduler(config, optimizer, len_train_loader=len(train_loader))    
-    
+    scheduler = get_lr_scheduler(
+        config, optimizer, len_train_loader=len(train_loader))
+
     with open(log_path, 'w') as f:
-        f.write('epoch,time(s),train_loss,test_loss,test_error(%)\n')        
+        f.write('epoch,time(s),train_loss,test_loss,test_error(%)\n')
 
     best_acc = 0
-    logging.info('Beginning training from epoch: {}'.format(str(start_epoch + 1)))
+    logging.info('Beginning training from epoch: {}'.format(
+        str(start_epoch + 1)))
     for epoch in range(start_epoch, config.epochs):
         begin_time = time.time()
 
-        train_loss_ema = train(net, train_loader, optimizer, scheduler, config, logging, epoch+1)
+        train_loss_ema = train(net, train_loader, optimizer,
+                               scheduler, config, logging, epoch+1)
         test_loss, test_acc = test(net, test_loader, logging)
 
         is_best = test_acc > best_acc
@@ -171,6 +174,5 @@ def main():
                 (config.epochs + 1, 0, 0, 0, 100 - 100 * test_c_acc))
 
 
-
-if __name__ == '__main__':    
+if __name__ == '__main__':
     main()

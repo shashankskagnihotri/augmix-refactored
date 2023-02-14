@@ -1,3 +1,4 @@
+from typing import Any, Tuple, Union
 import torch
 from torchvision import datasets
 from torchvision import transforms
@@ -17,7 +18,19 @@ def cifar_transforms():
     test_transform = preprocess
     return train_transform, test_transform, preprocess
 
-def get_data(config: Config):
+def get_data(config: Config) -> Tuple[Any, Any, Union[datasets.CIFAR10, datasets.CIFAR100], str, int]:
+    """Getting the cifar dataset for training and testing.
+
+    Parameters
+    ----------
+    config : Config
+        Config.
+
+    Returns
+    -------
+    Tuple[Any, Any, Union[datasets.CIFAR10, datasets.CIFAR100], str, int]
+        ...
+    """
     # Load datasets
     train_transform, test_transform, preprocess = cifar_transforms()
 
@@ -54,4 +67,4 @@ def get_data(config: Config):
         num_workers=config.num_workers,
         pin_memory=True)
     
-    return train_loader, test_loader, base_c_path, num_classes
+    return train_loader, test_loader, test_data, base_c_path, num_classes
