@@ -30,25 +30,25 @@ Not all recommendations and guidelines are changed everywhere (as of limited tim
 
 ## SLURM commands
 1. Submitting a job to the OMNI cluster:
-a. Create a bash file, `bash $> sbatch job_scripts/different_networks.sh`
+a. Create a bash file, `> sbatch job_scripts/different_networks.sh`
 > INFO: Example provided in job_scripts/different_networks.sh
 
 
 2. Monitoring submitted jobs:
  
- a. monitoring particular job : `bash $> squeue -j job_id`
+ a. monitoring particular job : `> squeue -j job_id`
 
- b. monitoring all jobs by user: `bash $> squeue -u user_id`
+ b. monitoring all jobs by user: `> squeue -u user_id`
 
- c. monitoring progress every second: `bash $> watch -n 1 squeue -u user_id`
+ c. monitoring progress every second: `> watch -n 1 squeue -u user_id`
 
- d. monitoring jobs on a partition : `bash $> squeue -p gpu`
-
-
-3. Getting information about a job: `bash $> scontrol show JOB=job_id`
+ d. monitoring jobs on a partition : `> squeue -p gpu`
 
 
-4. Re-arranging jobs by changing NICE:  `bash $> scontrol update JOB=job_id NICE=integer.`
+3. Getting information about a job: `> scontrol show JOB=job_id`
+
+
+4. Re-arranging jobs by changing NICE:  `> scontrol update JOB=job_id NICE=integer`
    >INFO  Higher number leads to less priority and lower number leads to higher priority. Default NICE=0
 
 
