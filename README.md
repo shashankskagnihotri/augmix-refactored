@@ -49,10 +49,10 @@ a. Create a bash file, `> sbatch job_scripts/different_networks.sh`
 
 
 4. Re-arranging jobs by changing NICE:  `> scontrol update JOB=job_id NICE=integer`
-   >INFO  Higher number leads to less priority and lower number leads to higher priority. Default NICE=0
+   >INFO:  Higher number leads to less priority and lower number leads to higher priority. Default NICE=0
 
 
-5. Finding out job efficiency: `bash $> seff -j job_id'
+5. Finding out job efficiency: `> seff -j job_id'
 
 
 
