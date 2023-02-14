@@ -33,10 +33,11 @@ pip install ipdb
 
 ## SLURM commands
 1. Submitting a job to the OMNI cluster:
+a. Create a bash file, example in job_scripts/different_networks.sh
 
- a. create a bash file, example in job_scripts/different_networks.sh
-
- b. sbatch job_scripts/different_networks.sh
+```bash
+$> sbatch job_scripts/different_networks.sh
+ ```
 
 
 2. Monitoring submitted jobs:
