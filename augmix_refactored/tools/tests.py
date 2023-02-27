@@ -23,7 +23,7 @@ def test(net, test_loader, logging):
         test_loader.dataset)
 
 
-def test_c(net, test_data, base_path, config: Config, logging):
+def test_c(net, test_data, base_path, config: Config, logging=None):
     """Evaluate network on given corrupted dataset."""
     corruption_accs = []
     for corruption in Augmentor.CORRUPTIONS:
@@ -38,7 +38,7 @@ def test_c(net, test_data, base_path, config: Config, logging):
             num_workers=config.num_workers,
             pin_memory=True)
 
-        test_loss, test_acc = test(net, test_loader)
+        test_loss, test_acc = test(net, test_loader, logging=logging)
         corruption_accs.append(test_acc)
         logging.info('{}\n\tTest Loss {:.3f} | Test Error {:.3f}'.format(
             corruption, test_loss, 100 - 100. * test_acc))

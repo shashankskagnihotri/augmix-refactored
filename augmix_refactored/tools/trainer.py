@@ -50,7 +50,7 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
             tepoch.set_description(f"Epoch {epoch}")
             tepoch.set_postfix(train_loss=loss_ema)
             if config.disable_tqdm and iter % config.print_freq == 0:
-                logging.info('Train Loss {:.3f}'.format(loss_ema))
+                logging.info('Train Loss {:.3f}'.format(loss))
             iter +=1
 
     return loss_ema

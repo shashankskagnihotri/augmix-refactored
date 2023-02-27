@@ -10,7 +10,7 @@ class Config(ArgparserMixin, SimpleYamlMixin):
     dataset: Literal['cifar10', 'cifar100'] = "cifar10"
     """Describing which dataset should be used"""
 
-    model: Literal['wrn', 'allconv', 'densenet', 'resnext'] = "wrn"
+    model: Literal['wrn', 'allconv', 'densenet', 'resnext', 'resnet18', 'resnet18_gelu', 'resnet18_mlp'] = "wrn"
     """The architecture which should be used."""
 
     epochs: int = 100
@@ -81,3 +81,6 @@ class Config(ArgparserMixin, SimpleYamlMixin):
 
     log_path: Optional[str] = None
     """Log path, will be filled automatically with the save folder when not specified."""
+
+    pretrained: bool = False
+    """Load ImageNet-1k pretrained model"""

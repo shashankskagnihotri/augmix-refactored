@@ -36,8 +36,7 @@ from augmix_refactored.tools.tests import test, test_c
 from augmix_refactored.tools.trainer import train
 from augmix_refactored.utils.dataloader import get_data
 from augmix_refactored.utils.utils import (get_lr_scheduler, get_model,
-                                           get_optimizer, setup_logger)
-
+                                           get_optimizer, setup_logger)                                       
 
 def main():
 
@@ -161,7 +160,7 @@ def main():
             .format((epoch + 1), int(time.time() - begin_time), train_loss_ema,
                     test_loss, 100 - 100. * test_acc))
 
-    test_c_acc = test_c(net, test_data, base_c_path, logging)
+    test_c_acc = test_c(net, test_data, base_c_path, config=config, logging=logging)
     logging.info('Mean Corruption Error: {:.3f}'.format(
         100 - 100. * test_c_acc))
 

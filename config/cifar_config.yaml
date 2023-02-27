@@ -1,18 +1,18 @@
 Config:
   all_ops: false
   augmentation_severity: 3
-  batch_size: 128
+  batch_size: 1
   dataset: cifar10
   image_size: 32
   droprate: 0.1
-  epochs: 5
+  epochs: 200
   eval_batch_size: 1000
   evaluate: false
   layers: 40
   learning_rate: 0.1
   mixture_depth: 4
   mixture_width: 3
-  model: wrn
+  model: resnet18_gelu
   momentum: 0.9
   no_jsd: false
   num_workers: 1
@@ -21,3 +21,4 @@ Config:
   save_folder: ./snapshots
   weight_decay: 0.0005
   widen_factor: 2
+  pretrained: True
