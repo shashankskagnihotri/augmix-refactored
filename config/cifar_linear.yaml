@@ -1,7 +1,7 @@
 Config:
   all_ops: false
   augmentation_severity: 3
-  batch_size: 1
+  batch_size: 128
   dataset: cifar10
   image_size: 32
   droprate: 0.1

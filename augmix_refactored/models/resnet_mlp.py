@@ -107,7 +107,7 @@ class BasicBlock(nn.Module):
         try:
             # out = self.linear(out.view(675,64)).view(3, 64, 15, 15)
             out = self.linear(out.view(shape[0]*shape[-1]*shape[-2],shape[1])).view(shape)
-            out = torch.cross(out, out)
+            out = torch.matmul(out, out)
         except:
             import ipdb;ipdb.set_trace()       
 
@@ -121,7 +121,7 @@ class BasicBlock(nn.Module):
         shape = out.shape
         try:
             out = self.linear(out.view(shape[0]*shape[-1]*shape[-2],shape[1])).view(shape)
-            out = torch.cross(out, out)
+            out = torch.matmul(out, out)
         except:
             import ipdb;ipdb.set_trace()
 
@@ -293,7 +293,7 @@ class ResNet(nn.Module):
         x = self.bn1(x)              
         shape = x.shape  
         x = self.layer64(x.view(x.shape[0]*x.shape[-1]*x.shape[-2], x.shape[1])).view(shape)
-        x = torch.cross(x, x)
+        x = torch.matmul(x, x)
         x = self.maxpool(x)
 
         x = self.layer1(x)
