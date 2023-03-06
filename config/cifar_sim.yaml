@@ -23,4 +23,4 @@ Config:
   widen_factor: 2
   pretrained: True
   cossim: False
-  sim: false
+  sim: True

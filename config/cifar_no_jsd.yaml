@@ -14,7 +14,7 @@ Config:
   mixture_width: 3
   model: resnet18_gelu
   momentum: 0.9
-  no_jsd: false
+  no_jsd: True
   num_workers: 1
   print_freq: 50
   resume_path: ''
@@ -22,5 +22,7 @@ Config:
   weight_decay: 0.0005
   widen_factor: 2
   pretrained: True
-  cossim: False
+  cossim: false
   sim: false
+  l2: false
+  mse: false

@@ -8,7 +8,7 @@ from augmix_refactored.third_party.ResNeXt_DenseNet.models.densenet import dense
 from augmix_refactored.third_party.ResNeXt_DenseNet.models.resnext import resnext29
 from augmix_refactored.third_party.WideResNet_pytorch.wideresnet import WideResNet
 from augmix_refactored.models import AllConvNet
-from augmix_refactored.models import resnet, resnet_mlp, resnet_gelu   
+from augmix_refactored.models import resnet, resnet_mlp, resnet_gelu, resnet_mlp_no_mul, resnet_mul
 
 def get_lr(step, total_steps, lr_max, lr_min):
     """Compute learning rate according to cosine annealing schedule."""
@@ -57,6 +57,24 @@ def get_model(config: Config, num_classes):
             net.fc = fc
         else:
             net = resnet_mlp.resnet18(num_classes=num_classes)
+    elif config.model == 'resnet18_mul':
+        if config.pretrained:
+            net = resnet_mul.resnet18(pretrained=config.pretrained)
+            net.conv1 = torch.nn.Conv2d(3, net.conv1.out_channels, kernel_size=3, stride=1, padding=0, bias=False)
+            in_features = net.fc.in_features
+            fc = torch.nn.Linear(in_features, num_classes)
+            net.fc = fc
+        else:
+            net = resnet_mul.resnet18(num_classes=num_classes)
+    elif config.model == 'resnet18_mlp_no_mul':
+        if config.pretrained:
+            net = resnet_mlp_no_mul.resnet18(pretrained=config.pretrained)
+            net.conv1 = torch.nn.Conv2d(3, net.conv1.out_channels, kernel_size=3, stride=1, padding=0, bias=False)
+            in_features = net.fc.in_features
+            fc = torch.nn.Linear(in_features, num_classes)
+            net.fc = fc
+        else:
+            net = resnet_mlp_no_mul.resnet18(num_classes=num_classes)
     elif config.model == 'resnet18_gelu':
         if config.pretrained:
             net = resnet_gelu.resnet18(pretrained=config.pretrained)

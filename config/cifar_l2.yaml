@@ -22,5 +22,7 @@ Config:
   weight_decay: 0.0005
   widen_factor: 2
   pretrained: True
-  cossim: False
+  cossim: false
   sim: false
+  l2: True
+  mse: false

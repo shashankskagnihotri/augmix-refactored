@@ -10,7 +10,7 @@ class Config(ArgparserMixin, SimpleYamlMixin):
     dataset: Literal['cifar10', 'cifar100'] = "cifar10"
     """Describing which dataset should be used"""
 
-    model: Literal['wrn', 'allconv', 'densenet', 'resnext', 'resnet18', 'resnet18_gelu', 'resnet18_mlp'] = "wrn"
+    model: Literal['wrn', 'allconv', 'densenet', 'resnext', 'resnet18', 'resnet18_gelu', 'resnet18_mlp', 'resnet18_mul', 'resnet18_mlp_no_mul'] = "wrn"
     """The architecture which should be used."""
 
     epochs: int = 100
@@ -84,3 +84,15 @@ class Config(ArgparserMixin, SimpleYamlMixin):
 
     pretrained: bool = False
     """Load ImageNet-1k pretrained model"""
+
+    cossim: bool = True
+    """Uses cosine similarity between sigmoid(logits) and one hot encoded targetsfor training"""
+    
+    sim: bool = False
+    """Uses normalization with sigmoid(logits)[target] on sigmoid(logits) for training"""
+
+    l2: bool = False
+    """Uses l2 norm between sigmoid(logits) one-hot encoded targets for calculating similarity for training"""
+
+    mse: bool = False
+    """Uses mse loss between sigmoid(logits) one-hot encoded targets for calculating similarity for training"""
