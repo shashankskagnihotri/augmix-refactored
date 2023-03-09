@@ -96,3 +96,9 @@ class Config(ArgparserMixin, SimpleYamlMixin):
 
     mse: bool = False
     """Uses mse loss between sigmoid(logits) one-hot encoded targets for calculating similarity for training"""
+    
+    jsd_scale: bool = False
+    """Uses adds jsd between sigmoid(logits) one-hot encoded targets to the loss for training"""
+
+    only_jsd_scale: bool = False
+    """Uses jsd between sigmoid(logits) one-hot encoded targets as the loss for training"""

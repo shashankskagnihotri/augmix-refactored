@@ -45,6 +45,7 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     # sim = torch.cdist(sig_clean, one_hot_tar)                          
                     # OPTION 2                    
                     sim = torch.cdist(sig_clean, one_hot_tar)  
+                    import ipdb;ipdb.set_trace()
                     loss = (sim * loss).mean() 
                 if config.mse:
                     one_hot_tar = torch.zeros(sig_clean.shape).cuda()
@@ -53,7 +54,19 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                         one_hot_tar[i][tar] = 1
                         i +=1                 
                     sim = F.mse_loss(sig_clean, one_hot_tar)  
-                    loss = loss + sim                             
+                    loss = loss + sim         
+                if config.jsd_scale: 
+                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    i = 0
+                    for tar in targets:
+                        one_hot_tar[i][tar] = 1
+                        i +=1                 
+                    m_sig_clean = 0.5*(sig_clean + one_hot_tar)
+                    sim = 0.5*(F.kl_div(m_sig_clean, sig_clean, reduction="batchmean")) + 0.5*(F.kl_div(m_sig_clean, one_hot_tar, reduction="batchmean"))
+                    if config.only_jsd_scale:
+                        loss = 12*(sim**2)
+                    else:
+                        loss = loss + 12*(sim**2)                   
             else:
                 images_all = torch.cat(images, 0).cuda()
                 targets = targets.cuda()
@@ -138,7 +151,7 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     p_a2 = torch.cdist(sig_aug2, one_hot_tar)        
                     sim=(p_c + p_a1 + p_a2)/3                    
                     loss = (sim * loss).mean() # OPTION 2
-                if config.l2:
+                if config.mse:
                     one_hot_tar = torch.zeros(sig_clean.shape).cuda()
                     i = 0
                     for tar in targets:
@@ -151,6 +164,29 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     sim=(p_c + p_a1 + p_a2)/3                    
 
                     loss = sim + loss
+                if config.jsd_scale:
+                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    i = 0
+                    for tar in targets:
+                        one_hot_tar[i][tar] = 1
+                        i +=1
+                    
+                    m_clean = 0.5*(sig_clean + one_hot_tar)
+                    m_aug1 = 0.5*(sig_aug1 + one_hot_tar)
+                    m_aug2 = 0.5*(sig_aug2 + one_hot_tar)
+
+
+
+                    p_c = 0.5*(F.kl_div(m_clean, sig_clean, reduction='batchmean')) + 0.5*(F.kl_div(m_clean, one_hot_tar, reduction='batchmean'))
+                    p_a1 = 0.5*(F.kl_div(m_aug1, sig_aug1, reduction='batchmean')) + 0.5*(F.kl_div(m_aug1, one_hot_tar, reduction='batchmean'))
+                    p_a2 = 0.5*(F.kl_div(m_aug2, sig_aug2, reduction='batchmean')) + 0.5*(F.kl_div(m_aug2, one_hot_tar, reduction='batchmean'))
+                    sim=(p_c**2 + p_a1**2 + p_a2**2)/3                    
+
+                    if config.only_jsd_scale:
+                        loss = 12*sim
+                    else:
+                        loss = 12*sim + loss
+
             #torch.stack(sim).mean(dim=1).mean()*loss
             loss.backward()
             torch.nn.utils.clip_grad_norm_(net.parameters(), 0.5)

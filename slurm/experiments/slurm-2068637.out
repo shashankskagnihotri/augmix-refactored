@@ -1,0 +1,20 @@
+Started at Mon Mar  6 08:11:13 CET 2023
+Running job: cifar100_l2_augmix.sh array id:  using 16 cpus per node with given JID 2068637 on queue gpu
+usage: cifar.py [-h] [--dataset {cifar10,cifar100}]
+                [--model {wrn,allconv,densenet,resnext,resnet18,resnet18_gelu,resnet18_mlp,resnet18_mul,resnet18_mlp_no_mul}]
+                [--epochs EPOCHS] [--learning-rate LEARNING_RATE]
+                [--batch-size BATCH_SIZE] [--eval-batch-size EVAL_BATCH_SIZE]
+                [--momentum MOMENTUM] [--weight-decay WEIGHT_DECAY]
+                [--layers LAYERS] [--widen-factor WIDEN_FACTOR]
+                [--droprate DROPRATE] [--mixture-width MIXTURE_WIDTH]
+                [--mixture-depth MIXTURE_DEPTH]
+                [--augmentation-severity AUGMENTATION_SEVERITY]
+                [--no-jsd NO_JSD] [--all-ops ALL_OPS]
+                [--save-folder SAVE_FOLDER] [--resume-path RESUME_PATH]
+                [--evaluate EVALUATE] [--print-freq PRINT_FREQ]
+                [--num-workers NUM_WORKERS] [--config-path CONFIG_PATH]
+                [--image-size IMAGE_SIZE] [--disable-tqdm DISABLE_TQDM]
+                [--log-path LOG_PATH] [--pretrained PRETRAINED]
+                [--cossim COSSIM] [--sim SIM] [--l2 L2] [--mse MSE]
+cifar.py: error: unrecognized arguments: --save_folder ./snapshots/l2_augmix
+Runtime: 2

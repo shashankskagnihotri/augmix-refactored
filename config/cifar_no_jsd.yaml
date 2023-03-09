@@ -12,7 +12,7 @@ Config:
   learning_rate: 0.1
   mixture_depth: 4
   mixture_width: 3
-  model: resnet18_gelu
+  model: wrn
   momentum: 0.9
   no_jsd: True
   num_workers: 1
