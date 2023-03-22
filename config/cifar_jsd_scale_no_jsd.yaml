@@ -12,7 +12,7 @@ Config:
   learning_rate: 0.1
   mixture_depth: 4
   mixture_width: 3
-  model: resnet18_gelu
+  model: wrn
   momentum: 0.9
   no_jsd: True
   num_workers: 16
@@ -28,3 +28,6 @@ Config:
   mse: false
   jsd_scale: True
   only_jsd_scale: false
+  reduction: 'none'
+  sigmoid: false
+  softmax: True

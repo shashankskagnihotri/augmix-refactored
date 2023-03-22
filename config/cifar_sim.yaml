@@ -24,3 +24,6 @@ Config:
   pretrained: True
   cossim: False
   sim: True
+  softmax: True
+  sigmoid: false
+  reduction: 'none'

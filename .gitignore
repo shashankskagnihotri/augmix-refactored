@@ -168,3 +168,6 @@ temp/*
 # Ignore datasets
 *.tar
 snapshots/*
+
+# Ignore slurm out files
+slurm/*

@@ -31,6 +31,10 @@ import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 
+#direc = "/work/ws-tmp/sa058646-retreat/augmix-refactored"
+#import sys
+#sys.path.append(direc)
+
 from augmix_refactored.config import Config
 from augmix_refactored.tools.tests import test, test_c
 from augmix_refactored.tools.trainer import train

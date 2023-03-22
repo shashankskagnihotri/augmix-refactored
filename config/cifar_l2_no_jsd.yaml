@@ -26,3 +26,6 @@ Config:
   sim: false
   l2: True
   mse: false
+  reduction: 'none'
+  sigmoid: false
+  softmax: True

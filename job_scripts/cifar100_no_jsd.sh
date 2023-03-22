@@ -4,7 +4,7 @@ echo "Running job: $SLURM_JOB_NAME array id: $SLURM_ARRAY_TASK_ID using $SLURM_J
 
 start=`date +%s`
 
-python augmix_refactored/script/cifar.py --config config/cifar_no_jsd.yaml --save-folder ./snapshots/no_jsd --dataset cifar100 --model wrn
+python augmix_refactored/script/cifar.py --config config/cifar_no_jsd.yaml --save-folder ./snapshots/softmax/no_jsd --dataset cifar100
 
 end=`date +%s`
 runtime=$((end-start))

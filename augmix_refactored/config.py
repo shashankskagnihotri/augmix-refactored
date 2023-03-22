@@ -102,3 +102,12 @@ class Config(ArgparserMixin, SimpleYamlMixin):
 
     only_jsd_scale: bool = False
     """Uses jsd between sigmoid(logits) one-hot encoded targets as the loss for training"""
+
+    sigmoid: bool = False
+    """ Takes sigmoid over logits """
+
+    softmax: bool = True
+    """ Takes softmax over logits """
+
+    reduction: Literal['mean', 'none'] = "none"
+    """ which reduction to use for cross entropy loss """

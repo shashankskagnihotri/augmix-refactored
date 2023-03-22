@@ -28,3 +28,6 @@ Config:
   mse: false
   jsd_scale: True
   only_jsd_scale: True
+  softmax: True
+  sigmoid: false
+  reduction: 'none'

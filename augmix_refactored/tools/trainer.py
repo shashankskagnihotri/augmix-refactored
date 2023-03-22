@@ -21,31 +21,37 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                 images = images.cuda()
                 targets = targets.cuda()
                 logits = net(images)
-                loss = F.cross_entropy(logits, targets)
+                loss = F.cross_entropy(logits, targets, reduction=config.reduction)
                 
-                sig_clean = F.sigmoid(logits)
+                if config.sigmoid:
+                    sig_clean = F.sigmoid(logits)
+                elif config.softmax:
+                    sig_clean = F.softmax(logits, dim=1)
                 if config.cossim:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda()
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
                     # OPTION 1                    
                     # sim = F.cosine_similarity(sig_clean, one_hot_tar, dim=0)                          
                     # OPTION 2                    
                     sim = F.cosine_similarity(sig_clean, one_hot_tar, dim=1)   
                     loss = ((1-sim) * loss).mean()
                 if config.l2:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
+                    #import ipdb;ipdb.set_trace()
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
                     # OPTION 1                    
                     # sim = torch.cdist(sig_clean, one_hot_tar)                          
                     # OPTION 2                    
                     sim = torch.cdist(sig_clean, one_hot_tar)  
-                    import ipdb;ipdb.set_trace()
+                    
                     loss = (sim * loss).mean() 
                 if config.mse:
                     one_hot_tar = torch.zeros(sig_clean.shape).cuda()
@@ -56,13 +62,16 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     sim = F.mse_loss(sig_clean, one_hot_tar)  
                     loss = loss + sim         
                 if config.jsd_scale: 
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1                 
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1                 
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
                     m_sig_clean = 0.5*(sig_clean + one_hot_tar)
+                    #import ipdb;ipdb.set_trace()
                     sim = 0.5*(F.kl_div(m_sig_clean, sig_clean, reduction="batchmean")) + 0.5*(F.kl_div(m_sig_clean, one_hot_tar, reduction="batchmean"))
+                    #sim = 0.5*(F.kl_div(sig_clean, m_sig_clean, reduction="batchmean")) + 0.5*(F.kl_div(one_hot_tar, m_sig_clean, reduction="batchmean"))
                     if config.only_jsd_scale:
                         loss = 12*(sim**2)
                     else:
@@ -75,7 +84,8 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     logits_all, images[0].size(0))
 
                 # Cross-entropy is only computed on clean images
-                loss = F.cross_entropy(logits_clean, targets)
+                mean_loss = F.cross_entropy(logits_clean, targets, reduction='mean')
+                loss = F.cross_entropy(logits_clean, targets, reduction=config.reduction)
 
                 p_clean, p_aug1, p_aug2 = F.softmax(
                     logits_clean, dim=1), F.softmax(
@@ -85,13 +95,18 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                 # Clamp mixture distribution to avoid exploding KL divergence
                 p_mixture = torch.clamp(
                     (p_clean + p_aug1 + p_aug2) / 3., 1e-7, 1).log()
-                loss += 12 * (F.kl_div(p_mixture, p_clean, reduction='batchmean') +
+                mean_loss += 12 * (F.kl_div(p_mixture, p_clean, reduction='batchmean') +
                             F.kl_div(p_mixture, p_aug1, reduction='batchmean') +
                             F.kl_div(p_mixture, p_aug2, reduction='batchmean')) / 3.
-                sig_clean, sig_aug1, sig_aug2 = F.sigmoid(
-                        logits_clean), F.sigmoid(
-                            logits_aug1), F.sigmoid(
-                                logits_aug2)                
+                
+                if config.sigmoid:
+                    sig_clean, sig_aug1, sig_aug2 = F.sigmoid(
+                            logits_clean), F.sigmoid(
+                                logits_aug1), F.sigmoid(
+                                    logits_aug2)                
+                elif config.softmax:
+                    sig_clean, sig_aug1, sig_aug2 = p_clean, p_aug1, p_aug2
+
                 if config.sim:
                     sim = []
                     #import ipdb;ipdb.set_trace()
@@ -102,13 +117,14 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                         sim.append((p_c + p_a1 + p_a2)/3)
 
                     #import ipdb;ipdb.set_trace()
-                    loss = (torch.stack(sim) * loss).mean(dim=1).mean()
+                    mean_loss += (torch.stack(sim) * loss).mean(dim=1).mean()
                 if config.cossim:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
                     # OPTION 1
                     """
                     p_c = F.cosine_similarity(sig_clean, one_hot_tar, dim=0)
@@ -138,38 +154,42 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     #loss = (torch.stack(sim) * loss).sum()
 
                     #loss = (sim * loss).sum() # OPTION 1
-                    loss = (sim * loss).mean()
+                    mean_loss += (sim * loss).mean()
                 if config.l2:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
 
                     p_c = torch.cdist(sig_clean, one_hot_tar)
                     p_a1 = torch.cdist(sig_aug1, one_hot_tar)
                     p_a2 = torch.cdist(sig_aug2, one_hot_tar)        
-                    sim=(p_c + p_a1 + p_a2)/3                    
-                    loss = (sim * loss).mean() # OPTION 2
+                    sim=(p_c + p_a1 + p_a2)/3    
+                    #import ipdb;ipdb.set_trace()                
+                    mean_loss += (sim * loss).mean() # OPTION 2
                 if config.mse:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
                     
                     p_c = F.mse_loss(sig_clean, one_hot_tar)
                     p_a1 = F.mse_loss(sig_aug1, one_hot_tar)
                     p_a2 = F.mse_loss(sig_aug2, one_hot_tar)        
                     sim=(p_c + p_a1 + p_a2)/3                    
 
-                    loss = sim + loss
+                    mean_loss += sim + loss
                 if config.jsd_scale:
-                    one_hot_tar = torch.zeros(sig_clean.shape).cuda()
-                    i = 0
-                    for tar in targets:
-                        one_hot_tar[i][tar] = 1
-                        i +=1
+                    #one_hot_tar = torch.zeros(sig_clean.shape).cuda()
+                    #i = 0
+                    #for tar in targets:
+                    #    one_hot_tar[i][tar] = 1
+                    #    i +=1
+                    one_hot_tar = F.one_hot(targets, num_classes=10 if config.dataset=='cifar10' else 100).cuda().to(dtype=sig_clean.dtype)
                     
                     m_clean = 0.5*(sig_clean + one_hot_tar)
                     m_aug1 = 0.5*(sig_aug1 + one_hot_tar)
@@ -183,11 +203,13 @@ def train(net, train_loader, optimizer, scheduler, config: Config, logging, epoc
                     sim=(p_c**2 + p_a1**2 + p_a2**2)/3                    
 
                     if config.only_jsd_scale:
-                        loss = 12*sim
+                        mean_loss += 12*sim
                     else:
-                        loss = 12*sim + loss
+                        #import ipdb;ipdb.set_trace()
+                        mean_loss += 12*sim + loss
+                loss = mean_loss
 
-            #torch.stack(sim).mean(dim=1).mean()*loss
+            #torch.stack(sim).mean(dim=1).mean()*loss            
             loss.backward()
             torch.nn.utils.clip_grad_norm_(net.parameters(), 0.5)
             optimizer.step()
